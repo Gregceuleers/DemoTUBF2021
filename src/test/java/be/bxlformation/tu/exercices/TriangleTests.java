@@ -11,6 +11,9 @@ import be.bxlformation.tu.interfaces.TestLifeCycleLogger;
 import org.junit.jupiter.api.*;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -38,7 +41,7 @@ public class TriangleTests implements TestLifeCycleLogger {
                             triangle.getA(),
                             triangle.getB(),
                             triangle.getC())
-                    );
+            );
             assertEquals("Un des 3 côtés vaut 0", exception.getMessage());
         }
 
@@ -137,7 +140,7 @@ public class TriangleTests implements TestLifeCycleLogger {
                         assertEquals("La somme de deux côtés est inférieure au troisième", exception.getMessage());
 
                     }
-                    );
+            );
         }
 
         @Test
@@ -207,10 +210,28 @@ public class TriangleTests implements TestLifeCycleLogger {
             assertEquals(3, fields.length);
 
             assertAll("proprieteTypeInt",
-                    () -> assertEquals(int.class,fields[0].getType()),
-                    () -> assertEquals(int.class,fields[1].getType()),
-                    () -> assertEquals(int.class,fields[2].getType())
-                    );
+                    () -> assertEquals(int.class, fields[0].getType()),
+                    () -> assertEquals(int.class, fields[1].getType()),
+                    () -> assertEquals(int.class, fields[2].getType())
+            );
+        }
+
+        @Test
+        void checkValidityDoitAvoir3ParametresDeTypeInt() {
+            Method[] methods = TriangleBF.class.getDeclaredMethods();
+            Method method = Stream.of(methods).filter(m -> m.getName().equals("checkValidity")).findFirst().orElse(null);
+
+            assertNotNull(method);
+
+            assertEquals(3, method.getParameterCount());
+
+            Parameter[] parameters = method.getParameters();
+            assertAll("paramètresTypeInt",
+                    () -> assertEquals(int.class, parameters[0].getType()),
+                    () -> assertEquals(int.class, parameters[1].getType()),
+                    () -> assertEquals(int.class, parameters[2].getType())
+            );
+            
         }
     }
 
